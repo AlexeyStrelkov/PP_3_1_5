@@ -1,6 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +26,8 @@ public class AdminController {
     @RequestMapping(value = "/admin")
     public String adminPage(Model model) {
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("user", (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return "admin";
-    }
-
-    @GetMapping(value = "admin/add")
-    public String addUser(Model model) {
-        model.addAttribute("user", new User());
-        return "adding";
     }
 
     @PostMapping(value = "admin/add")
@@ -48,22 +43,9 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "admin/edit/{id}")
-    public String editUser(Model model, @PathVariable("id") Long id) {
-        User user = userService.getUserById(id);
-        Set<Role> roles = user.getRoles();
-        for (Role role : roles) {
-            if (role.equals(roleService.getRoleByName("ROLE_ADMIN"))) {
-                model.addAttribute("role", true);
-            }
-        }
-        model.addAttribute("user", user);
-        return "editing";
-    }
-
-    @PostMapping(value = "admin/edit")
+    @PostMapping(value = "admin/edit/{id}")
     public String postEditUser(@ModelAttribute("user") User user,
-                               @RequestParam(name = "roleAdmin", required = false) String role) {
+                               @RequestParam(name = "role", required = false) String role) {
         Set<Role> roles = new HashSet<>();
         roles.add(roleService.getDefaultRole());
         if (role != null && role.equals("ROLE_ADMIN")) {
@@ -71,7 +53,6 @@ public class AdminController {
         }
         user.setRoles(roles);
         userService.editUser(user);
-        System.out.println(role);
         return "redirect:/admin";
     }
 
