@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service

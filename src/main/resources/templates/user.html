@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -13,15 +15,13 @@
          class="navbar navbar-dark bg-dark flex-md-nowrap p-1 shadow">
         <div class="container-fluid">
             <div th:if="${#request.userPrincipal != null}">
-                <span class="navbar-text font-weight-bold" style="color: white"
-                      th:text="${user.getEmail()}">
-                </span>
+        <span class="navbar-text font-weight-bold" style="color: white"
+              th:text="${user.getEmail()}">
+        </span>
+
                 <span class="navbar-text" style="color: white"
-                      th:text="' with roles: '">
-                </span>
-                <span class="navbar-text" style="color: white">
-                    <a th:each="role: ${user.getRoles()}" th:text="${role.name}+' '"></a>
-                </span>
+                      th:text="' with roles: ' + ${#strings.arrayJoin(user.getRoles(), ' ')}">
+        </span>
             </div>
             <div>
                 <ul class="navbar-nav">
@@ -41,26 +41,32 @@
                         padding-left: 0px;
                         padding-right: 0px;
                         height: 100vh">
+
+                <!--навигация слева-->
                 <ul class="nav nav-pills flex-column">
-                    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="/admin">Admin</a>
-                        </li>
-                    </div>
+
                     <div sec:authorize="hasAuthority('ROLE_USER')">
                         <li class="nav-item">
                             <a class="nav-link active"
                                href="/user">User</a>
                         </li>
                     </div>
+
+                    <div sec:authorize="hasAuthority('ROLE_ADMIN')">
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="/admin">Admin</a>
+                        </li>
+                    </div>
                 </ul>
             </div>
+
             <div class="col-md-10 bg-light"
                  style="padding-top: 20px;
                         height: 100vh">
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="User">
                         <h2 class="h2">User information-page</h2>
+
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="UsersTable">
                                 <div class="card">
@@ -84,8 +90,7 @@
                                                 <td th:text="${user.getLastName()}"></td>
                                                 <td th:text="${user.getAge()}"></td>
                                                 <td th:text="${user.getEmail()}"></td>
-                                                <td><a th:each="role : ${user.getRoles()}"
-                                                       th:text="${role.name} + ' '"></a></td>
+                                                <td th:utext="${#strings.arrayJoin(user.getAuthorities(), ' ')}"></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -99,5 +104,3 @@
         </div>
     </div>
 </main>
-</body>
-</html>

@@ -13,13 +13,12 @@ public class RoleDaoImpl implements RoleDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-
     @Override
     public Role getRoleByName(String name) {
         Role role = null;
         try {
             role = entityManager
-                    .createQuery("select r from Role r where r.name = :name", Role.class)
+                    .createQuery("SELECT r FROM Role r WHERE r.name=:name", Role.class)
                     .setParameter("name", name)
                     .getSingleResult();
         } catch (Exception e) {

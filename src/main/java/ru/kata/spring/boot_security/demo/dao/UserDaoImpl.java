@@ -19,22 +19,21 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return entityManager
-                .createQuery("select u from User u", User.class)
-                .getResultList();
-    }
-
-    @Override
     public void deleteUser(Long id) {
+
         try {
             User user = entityManager.find(User.class, id);
             if (user != null) {
                 entityManager.remove(user);
             }
         } catch (NullPointerException e) {
-            System.out.println("User not found");
+            System.out.println("This user not found");
         }
+    }
+
+    @Override
+    public void editUser(User user) {
+        entityManager.merge(user);
     }
 
     @Override
@@ -43,8 +42,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void editUser(User user) {
-        entityManager.merge(user);
+    public List<User> getAllUsers() {
+        return entityManager
+                .createQuery("select u from User u", User.class)
+                .getResultList();
     }
 
     @Override
